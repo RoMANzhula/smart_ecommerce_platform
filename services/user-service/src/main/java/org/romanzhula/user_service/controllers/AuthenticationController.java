@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.romanzhula.user_service.controllers.requests.LoginRequest;
 import org.romanzhula.user_service.controllers.requests.UserRegistrationRequest;
 import org.romanzhula.user_service.controllers.responses.AuthResponse;
-import org.romanzhula.user_service.models.User;
 import org.romanzhula.user_service.services.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
