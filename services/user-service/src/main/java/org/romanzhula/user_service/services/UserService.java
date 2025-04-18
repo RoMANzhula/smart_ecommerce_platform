@@ -1,45 +1,33 @@
 package org.romanzhula.user_service.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.romanzhula.user_service.controllers.requests.UserRegistrationRequest;
-import org.romanzhula.user_service.models.User;
+import org.romanzhula.user_service.controllers.responses.UserResponse;
 import org.romanzhula.user_service.repositories.UserRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
 
-    @Transactional
-    public User registerUser(UserRegistrationRequest registrationRequest) {
-        User user = new User();
-
-        user.setUsername(registrationRequest.username());
-        user.setPassword(passwordEncoder.encode(registrationRequest.password()));
-        user.setEmail(registrationRequest.email());
-
-        return userRepository.save(user);
-    }
-
     @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            log.error("User with username: {} NOT FOUND!", username);
-            throw  new UsernameNotFoundException("User with username: " + username + " NOT FOUND!");
-        }
-
-        return user;
+    public UserResponse findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> new UserResponse(
+                        user.getId().toString(),
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getEmail(),
+                        Collections.singleton(user.getRole().toString())
+                ))
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username))
+        ;
     }
 
 }
