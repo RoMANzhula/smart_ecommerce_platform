@@ -1,11 +1,13 @@
 package org.romanzhula.user_service.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.romanzhula.user_service.controllers.requests.UserRegistrationRequest;
-import org.romanzhula.user_service.models.User;
+import org.romanzhula.user_service.controllers.responses.UserResponse;
 import org.romanzhula.user_service.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -15,15 +17,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(
-            @RequestBody UserRegistrationRequest registrationRequest
-    ) {
-        return ResponseEntity.ok(userService.registerUser(registrationRequest));
-    }
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByUsername(
+    public ResponseEntity<UserResponse> getUserByUsername(
             @PathVariable String username
     ) {
         return ResponseEntity.ok(userService.findByUsername(username));
@@ -31,5 +27,4 @@ public class UserController {
 
 }
 
-// TODO: change User to UserDTO
 // TODO: add RestControllerAdvice
