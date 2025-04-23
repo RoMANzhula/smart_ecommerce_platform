@@ -13,5 +13,10 @@ spring:
     host: localhost
     port: 6379
 
+mongock:
+  enabled: true
+  migration-scan-package:
+    - org.romanzhula.product_service.migrations
+
 server:
   port: 8082
