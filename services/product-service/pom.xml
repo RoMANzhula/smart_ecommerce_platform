@@ -39,6 +39,29 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
+		<!-- Mongok - migrations settings -->
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongock-bom</artifactId>
+			<version>5.4.0</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongock-springboot</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongodb-springdata-v4-driver</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongock-standalone</artifactId>
+			<version>5.4.0</version>
+		</dependency>
+
 		<!-- Redis for Caching -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
