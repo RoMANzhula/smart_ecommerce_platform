@@ -1,0 +1,79 @@
+Checking by Postman
+
+!!! don`t forget to run the Redis on the Docker
+
+1. Create new product
+    POST    http://localhost:8082/api/v1/products/create
+
+    Headers:
+        Content-Type: application/json
+
+    Body -> raw
+        {
+          "name": "New Chair",
+          "price": 150.00,
+          "category": "Furniture"
+        }
+
+    We get answer JSON:
+        {
+            "id": "6809190a1e240f0ca003c4a0",
+            "name": "New Chair",
+            "price": 150.0,
+            "category": "Furniture"
+        }
+
+
+2. Get all products:
+    GET     http://localhost:8082/api/v1/products/all
+
+    Headers:
+            Content-Type: application/json
+
+    We get answer JSON:
+        [
+            {
+                "id": "68090e121e240f0ca003c49d",
+                "name": "Laptop",
+                "price": 1200.0,
+                "category": "Electronics"
+            },
+            {
+                "id": "68090e121e240f0ca003c49e",
+                "name": "Phone",
+                "price": 800.0,
+                "category": "Electronics"
+            },
+            {
+                "id": "68090e121e240f0ca003c49f",
+                "name": "Desk",
+                "price": 200.0,
+                "category": "Furniture"
+            },
+            {
+                "id": "6809190a1e240f0ca003c4a0",
+                "name": "New Chair",
+                "price": 150.0,
+                "category": "Furniture"
+            }
+        ]
+
+
+3. Get product by id:
+    First of all we need run Redis in Docker Desktop
+    bash run next:
+        cd services/product-service
+        docker run --name redis -p 6379:6379 redis
+
+    GET     http://localhost:8082/api/v1/products/6809190a1e240f0ca003c4a0
+
+    Headers:
+                Content-Type: application/json
+
+    We get answer JSON(serialized):
+        {
+            "id": "6809190a1e240f0ca003c4a0",
+            "name": "New Chair",
+            "price": 150.0,
+            "category": "Furniture"
+        }
