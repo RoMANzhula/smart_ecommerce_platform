@@ -1,0 +1,43 @@
+
+
+!!! run docker-compose.yml file (zookeeper and kafka services) in a terminal:
+    cd services/order-service
+    docker-compose up -d
+
+    stop kafka:
+    docker-compose down
+
+    Checking topics in the Kafka:
+        1. Go to Docker Desktop -> open Kafka server
+        2. In the Kafka terminal input:
+            check topics:
+                kafka-topics --list --bootstrap-server localhost:9092
+            reading message from topic (here we will see orderIds):
+                kafka-console-consumer --bootstrap-server localhost:9092 --topic order-created-topic --from-beginning
+
+
+
+Checking by Postman:
+
+1. create new order
+    POST    http://localhost:8083/api/v1/orders/create
+
+    Headers:
+        Content-Type: application/json
+
+    Body -> raw:
+        {
+          "userId": "1",
+          "productId": "68090e121e240f0ca003c49d",
+          "quantity": 2,
+          "totalPrice": 2400.0
+        }
+
+    We get data about order:
+        {
+            "id": 1,
+            "userId": "1",
+            "productId": "68090e121e240f0ca003c49d",
+            "quantity": 2,
+            "totalPrice": 2400.0
+        }
