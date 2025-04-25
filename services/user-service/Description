@@ -1,0 +1,58 @@
+Checking by Postman:
+
+!!! We have migration file that create new user Admin
+
+1. register new user:
+    POST    http://localhost:8081/api/v1/auth/register
+
+    Headers:
+        Content-Type: application/json
+
+    Body -> raw:
+        {
+            "username": "roman",
+            "password": "123",
+            "email": "test_mail@mailtest.com"
+        }
+
+    We get answer - jason web token:
+        {
+            "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb21hbiIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NDU1MjA3NzQsImV4cCI6MTc0NTUyNzk3NH0.Nj0pP9c4Jz0jCqPfzqU8SpcSO9Ucp68dSrNcQq6v1conF1hI1t5gKw3cr7-C1lqkZcsw5wLt2XiJblyU_TDGXQ"
+        }
+
+
+2. login:
+    POST    http://localhost:8081/api/v1/auth/login
+
+    Headers:
+        Content-Type: application/json
+
+    Body -> raw:
+        {
+            "username": "roman",
+            "password": "123"
+        }
+
+    We get json web token:
+        {
+            "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb21hbiIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NDU1MjEwNTksImV4cCI6MTc0NTUyODI1OX0.-WUmRZryz-rSowvO6PEoI2xHwtFgPdlwFEahf4FT0_-ZORnVnIE51Er_av2WF3RMilcGd4tML2AP64a-EnuGdQ"
+        }
+
+
+3. get user's data by username:
+    GET     http://localhost:8081/api/v1/users/roman
+
+    Headers:
+        Content-Type: application/json
+        Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb21hbiIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NDU1MjEwNTksImV4cCI6MTc0NTUyODI1OX0.-WUmRZryz-rSowvO6PEoI2xHwtFgPdlwFEahf4FT0_-ZORnVnIE51Er_av2WF3RMilcGd4tML2AP64a-EnuGdQ
+
+    We get data about user:
+        {
+            "id": "2",
+            "username": "roman",
+            "password": "$2a$08$C/e86iq3DoyXJKqLo9gX3e0AH27F.hPDs4wzRz0ONWXvI6dqxvuHu",
+            "email": "test_mail@mailtest.com",
+            "roles": [
+                "USER"
+            ]
+        }
