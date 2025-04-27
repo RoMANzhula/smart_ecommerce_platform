@@ -3,6 +3,7 @@ package org.romanzhula.order_service.services;
 import lombok.RequiredArgsConstructor;
 import org.romanzhula.order_service.models.Order;
 import org.romanzhula.order_service.repositories.OrderRepository;
+import org.romanzhula.order_service.requests.UpdateInventoryRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +20,8 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
+        String inventoryServiceUrl = "http://localhost:8084/api/v1/inventory";
+
         Boolean isAvailable = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/check")
@@ -28,17 +31,15 @@ public class OrderService {
                 )
                 .retrieve()
                 .bodyToMono(Boolean.class)
-                .block()
-        ;
+                .block();
 
         if (Boolean.TRUE.equals(isAvailable)) {
+
+            UpdateInventoryRequest request = new UpdateInventoryRequest(order.getProductId(), -order.getQuantity());
+
             webClient.post()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/update")
-                            .queryParam("productId", order.getProductId())
-                            .queryParam("quantityChange", -order.getQuantity())
-                            .build()
-                    )
+                    .uri("/update")
+                    .bodyValue(request)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block()
