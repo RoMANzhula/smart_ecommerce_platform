@@ -1,21 +1,5 @@
 
-
-!!! run docker-compose.yml file (zookeeper and kafka services) in a terminal:
-    cd services/order-service
-    docker-compose up -d
-
-    stop kafka:
-    docker-compose down
-
-    Checking topics in the Kafka:
-        1. Go to Docker Desktop -> open Kafka server
-        2. In the Kafka terminal input:
-            check topics:
-                kafka-topics --list --bootstrap-server localhost:9092
-            reading message from topic (here we will see orderIds):
-                kafka-console-consumer --bootstrap-server localhost:9092 --topic order-created-topic --from-beginning
-
-
+First of all we need add quantity to checking orders (for example:   http://localhost:8084/api/v1/inventory/update?productId=680e7dd15a7db12d62b2c302&quantity=5)
 
 Checking by Postman:
 
