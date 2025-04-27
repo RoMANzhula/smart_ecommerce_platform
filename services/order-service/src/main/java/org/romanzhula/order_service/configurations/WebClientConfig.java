@@ -11,7 +11,7 @@ public class WebClientConfig {
     @Bean
     public WebClient inventoryWebClient(WebClient.Builder webClientBuilder) {
         return webClientBuilder
-                .baseUrl("http://inventory-service/api/v1/inventory")
+                .baseUrl("http://localhost:8084/api/v1/inventory")
                 .build()
         ;
     }
