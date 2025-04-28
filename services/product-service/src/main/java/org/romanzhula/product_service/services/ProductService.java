@@ -9,14 +9,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final KafkaProducerService kafkaProducerService;
 
     public Product createProduct(Product product) {
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+
+        kafkaProducerService.publishProductCreatedEvent(savedProduct.getId());
+
+        return savedProduct;
     }
 
     @Cacheable(value = "products", key = "#id")
