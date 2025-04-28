@@ -29,4 +29,11 @@ public class InventoryService {
         ;
     }
 
+    public int getQuantity(String productId) {
+        return inventoryRepository.findById(productId)
+                .map(Inventory::getQuantity)
+                .orElse(0)
+        ;
+    }
+
 }
