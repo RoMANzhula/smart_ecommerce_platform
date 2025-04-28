@@ -45,6 +45,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- Kafka for Event Publishing -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
 		<!-- Lombok for Boilerplate Code -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
