@@ -1,0 +1,34 @@
+Entry point for inventory management
+
+1. Run Redis in Docker Desktop
+    cd services/inventory-service
+    docker run --name redis -p 6379:6379 redis
+2. Checking data in Redis:
+   1. Go to Docker Desktop -> open Redis container(image)
+   2. In the Redis terminal input:
+       redis-cli
+           we get:
+               127.0.0.1:6379>
+       KEYS *
+           we get:
+               1) "inventory"
+               2) "inventory:680e70835a7db12d62b2c301"
+               3) "inventory:680e7fd8b23942007cdada4d"
+               4) "inventory:680e7dd15a7db12d62b2c302"
+
+Checking in Postman:
+
+1. Update or Add product by id and quantity:
+    POST    http://localhost:8080/api/v1/inventory/update?productId=680e7dd15a7db12d62b2c302&quantity=5
+
+    Params:
+        productId       680e7dd15a7db12d62b2c302
+        quantity        5
+
+    We get: 200 OK
+
+
+2. Check available:
+    GET     http://localhost:8080/api/v1/inventory/check?productId=680e7dd15a7db12d62b2c302&quantity=3
+
+    We get body: true (or false)
