@@ -1,6 +1,7 @@
 package org.romanzhula.inventory_service.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.romanzhula.inventory_service.controllers.requests.UpdateInventoryRequest;
 import org.romanzhula.inventory_service.services.InventoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,9 @@ public class InventoryController {
 
     @PostMapping("/update")
     public ResponseEntity<Void> updateInventory(
-            @RequestParam String productId,
-            @RequestParam int quantity
+            @RequestBody UpdateInventoryRequest request
     ) {
-        inventoryService.updateInventory(productId, quantity);
+        inventoryService.updateInventory(request.getProductId(), request.getQuantity());
         return ResponseEntity.ok().build();
     }
 
@@ -29,6 +29,13 @@ public class InventoryController {
             @RequestParam int quantity
     ) {
         return ResponseEntity.ok(inventoryService.isAvailable(productId, quantity));
+    }
+
+    @GetMapping("/quantity")
+    public ResponseEntity<Integer> getQuantity(
+            @RequestParam String productId
+    ) {
+        return ResponseEntity.ok(inventoryService.getQuantity(productId));
     }
 
 }
