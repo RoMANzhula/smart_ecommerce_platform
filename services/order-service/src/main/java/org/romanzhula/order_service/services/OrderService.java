@@ -2,6 +2,7 @@ package org.romanzhula.order_service.services;
 
 import lombok.RequiredArgsConstructor;
 import org.romanzhula.order_service.models.Order;
+import org.romanzhula.order_service.models.events.UserActivityEvent;
 import org.romanzhula.order_service.repositories.OrderRepository;
 import org.romanzhula.order_service.requests.UpdateInventoryRequest;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final KafkaProducerService kafkaProducer;
+    private final KafkaProducerService kafkaProducerService;
     private final WebClient webClient;
 
 
@@ -47,7 +48,15 @@ public class OrderService {
 
             Order savedOrder = orderRepository.save(order);
 
-            kafkaProducer.publishOrderCreatedEvent(savedOrder.getId().toString());
+            kafkaProducerService.publishOrderCreatedEvent(savedOrder.getId().toString());
+
+            UserActivityEvent userActivityEvent = new UserActivityEvent();
+            userActivityEvent.setUserId(order.getUserId());
+            userActivityEvent.setProductId(order.getProductId());
+            userActivityEvent.setScore(0.5); // 0.5 - for viewed product
+            userActivityEvent.setAction("VIEWED_PRODUCT");
+
+            kafkaProducerService.publishUserActivityViewedProductEvent(userActivityEvent);
 
             return savedOrder;
         } else {
