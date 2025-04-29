@@ -1,0 +1,44 @@
+
+
+!!! run docker-compose.yml file (zookeeper and kafka services) in a terminal:
+    cd services/order-service
+    docker-compose up -d
+
+    stop kafka:
+    docker-compose down
+
+    Checking topics in the Kafka:
+        1. Go to Docker Desktop -> open Kafka container(image)
+        2. In the Kafka terminal input:
+            check topics:
+                kafka-topics --list --bootstrap-server localhost:9092
+
+            reading message from topic (here we will see orderIds):
+                kafka-console-consumer --bootstrap-server localhost:9092 --topic order-created-topic --from-beginning
+                kafka-console-consumer --bootstrap-server localhost:9092 --topic order-created-topic --from-beginning
+
+                we get next as example:
+                680e70835a7db12d62b2c301
+                680e7dd15a7db12d62b2c302
+                680e7fd8b23942007cdada4d
+
+
+    Checking data in Redis:
+        1. Go to Docker Desktop -> open Redis container(image)
+        2. In the Redis terminal input:
+            redis-cli
+                we get:
+                    127.0.0.1:6379>
+            KEYS *
+                we get:
+                    1) "inventory"
+                    2) "inventory:680e70835a7db12d62b2c301"
+                    3) "inventory:680e7fd8b23942007cdada4d"
+                    4) "inventory:680e7dd15a7db12d62b2c302"
+
+        !!! If we use product-service (create orders) - we use Redis as cash and we can get next data:
+                1) "inventory:680e7dd15a7db12d62b2c302"
+                2) "inventory:680e7fd8b23942007cdada4d"
+                3) "inventory"
+                4) "inventory:680e70835a7db12d62b2c301"
+                5) "products::6809190a1e240f0ca003c4a0"
