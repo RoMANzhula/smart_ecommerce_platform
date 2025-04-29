@@ -1,0 +1,19 @@
+Checking by Postman^
+
+1. get recommendations by userId:
+    GET     http://localhost:8085/api/v1/recommendations/1
+
+    We get data:
+        [
+            {
+                "id": 1,
+                "userId": "1",
+                "productId": "680e7fd8b23942007cdada4d",
+                "score": 0.5,
+                "action": "VIEWED_PRODUCT"
+            }
+            ...
+        ]
+
+Here we get data with score = 0.5 = viewed some product (but not buy) and next time we can show to client
+    recommendations about products witch client viewed (as list of things)
