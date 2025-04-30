@@ -48,7 +48,7 @@ public class OrderService {
 
             Order savedOrder = orderRepository.save(order);
 
-            kafkaProducerService.publishOrderCreatedEvent(savedOrder.getId().toString());
+            kafkaProducerService.publishOrderCreatedEvent(savedOrder.getId().toString(), savedOrder.getUserId().toString());
 
             UserActivityEvent userActivityEvent = new UserActivityEvent();
             userActivityEvent.setUserId(order.getUserId());
