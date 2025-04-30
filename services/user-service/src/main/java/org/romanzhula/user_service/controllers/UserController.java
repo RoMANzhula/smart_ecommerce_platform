@@ -25,6 +25,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
 
-}
+    @GetMapping("/{user-id}/email")
+    public ResponseEntity<String> getUserEmail(
+            @PathVariable("user-id") String userId
+    ) {
+        return ResponseEntity.ok(userService.getEmailByUserId(userId));
+    }
 
-// TODO: add RestControllerAdvice
+}
