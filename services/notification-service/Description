@@ -1,0 +1,3 @@
+For checking this service:
+    - user (from user-service) must have valid email (this email will get letter about success order)
+    - we need register smtp setting for ukr.net (add password and email to application.yml)
