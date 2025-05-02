@@ -21,7 +21,7 @@ public class KafkaMessageSenderService {
 
     public void sendFailureMessage(String orderId) {
         kafkaTemplate.send("payment-failed-topic", orderId);
-        log.info("Sent success message for orderId={}", orderId);
+        log.info("Sent failure message for orderId={}", orderId);
     }
 
 }
