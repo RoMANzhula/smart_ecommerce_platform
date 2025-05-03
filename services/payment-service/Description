@@ -1,0 +1,43 @@
+Checking in Postman:
+
+1. process payment:
+
+    POST    http://localhost:8087/api/v1/payments/process
+
+    Headers:
+        Content-Type: application/json
+
+    Body -> Raw (json):
+        for success:
+        {
+          "orderId": "2",
+          "token": "tok_visa",
+          "amount": 200.00
+        }
+        for fail:
+        {
+          "orderId": "2",
+          "token": "tok_chargeDeclined",
+          "amount": 25.99
+        }
+
+    We get:
+        {
+          "id": 1,
+          "orderId": "order123",
+          "paymentStatus": "SUCCESS",
+          "amount": 25.99
+        }
+    or
+        {
+          "id": 2,
+          "orderId": "order123",
+          "paymentStatus": "FAILED",
+          "amount": 25.99
+        }
+
+Stripes test tokens:
+    tok_visa	            success by Visa
+    tok_mastercard	        success by Mastercard
+    tok_chargeDeclined	    payment rejection emulation
+    tok_visa_debit	        success by debit card
