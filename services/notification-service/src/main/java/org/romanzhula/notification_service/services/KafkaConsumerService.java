@@ -27,6 +27,31 @@ public class KafkaConsumerService {
         );
     }
 
+    @KafkaListener(topics = "payment-success-topic", groupId = "notification-group")
+    public void handlePaymentSuccess(OrderCreatedEvent event) {
+        String email = getEmailByUserId(event.getUserId());
+        String orderId = event.getOrderId();
+
+        notificationService.sendByMail(
+                email,
+                "Payment Successful",
+                "Your order " + orderId + " has been paid."
+        );
+    }
+
+    @KafkaListener(topics = "payment-failed-topic", groupId = "notification-group")
+    public void handlePaymentFailure(OrderCreatedEvent event) {
+        String email = getEmailByUserId(event.getUserId());
+        String orderId = event.getOrderId();
+
+        notificationService.sendByMail(
+                email,
+                "Payment Failed",
+                "Your order " + orderId + " could not be paid."
+        );
+    }
+
+
     private String getEmailByUserId(String userId) {
         return userServiceWebClient
                 .get()
