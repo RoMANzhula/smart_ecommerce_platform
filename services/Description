@@ -1,4 +1,9 @@
 
+    For creating images in Docker - go to the terminal (WSL):
+        1. cd services
+        2. chmod +x build-and-push.sh
+        3. ./build-and-push.sh
+
 
 !!! run docker-compose.yml file (zookeeper and kafka services) in a terminal:
     cd services/order-service
