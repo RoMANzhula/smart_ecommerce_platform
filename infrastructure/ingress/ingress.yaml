@@ -15,7 +15,7 @@ spec:
               service:
                 name: user-service
                 port:
-                  number: 80
+                  number: 8081
     - host: product-service.local
       http:
         paths:
@@ -25,7 +25,14 @@ spec:
               service:
                 name: product-service
                 port:
-                  number: 80
+                  number: 8082
+          - path: /cache
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 8082
     - host: order-service.local
       http:
         paths:
@@ -35,7 +42,7 @@ spec:
               service:
                 name: order-service
                 port:
-                  number: 80
+                  number: 8083
     - host: payment-service.local
       http:
         paths:
@@ -45,7 +52,7 @@ spec:
               service:
                 name: payment-service
                 port:
-                  number: 80
+                  number: 8087
     - host: recommendation-service.local
       http:
         paths:
@@ -55,7 +62,7 @@ spec:
               service:
                 name: recommendation-service
                 port:
-                  number: 80
+                  number: 8085
     - host: inventory-service.local
       http:
         paths:
@@ -65,7 +72,7 @@ spec:
               service:
                 name: inventory-service
                 port:
-                  number: 80
+                  number: 8084
     - host: notification-service.local
       http:
         paths:
@@ -75,14 +82,4 @@ spec:
               service:
                 name: notification-service
                 port:
-                  number: 80
-    - host: product-service.local
-      http:
-        paths:
-          - path: /cache
-            pathType: Prefix
-            backend:
-              service:
-                name: product-service
-                port:
-                  number: 80
+                  number: 8086
