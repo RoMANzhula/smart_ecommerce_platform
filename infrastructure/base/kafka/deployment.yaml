@@ -19,6 +19,6 @@ spec:
             - containerPort: 9092
           env:
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              value: zookeeper:2181
-            - name: ALLOW_PALINTEXT_LISTENER
+              value: "zookeeper:2181"
+            - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
