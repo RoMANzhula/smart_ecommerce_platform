@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: product-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: product-service
@@ -19,4 +19,6 @@ spec:
             - containerPort: 8082
           envFrom:
             - configMapRef:
-                name: product-service-config
+                name: product-config
+            - secretRef:
+                name: product-db-secret
