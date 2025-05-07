@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-service-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: payment-service
+      datasource:
+        url: jdbc:postgresql://payment-db:5432/sep_payment_db
+        username: postgres
+        password: YOUR_PASSWORD
+      flyway:
+        enabled: true
+        locations: classpath:db/migration
+        baseline-on-migrate: true
+      jpa:
+        hibernate:
+          ddl-auto: update
+        show-sql: true
+      kafka:
+        bootstrap-servers: kafka:9092
+        producer:
+          key-serializer: org.apache.kafka.common.serialization.StringSerializer
+          value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    stripe:
+      secret:
+        key: sk_test_51N7tu0I3vHGJzoz7...xxxxxxx
+    server:
+      port: 8087
