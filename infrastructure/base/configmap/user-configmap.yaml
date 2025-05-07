@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: user-service
+      datasource:
+        url: jdbc:postgresql://user-db:5432/sep_user_db
+        username: postgres
+        password: YOUR_PASSWORD
+      jpa:
+        hibernate:
+          ddl-auto: none
+        show-sql: true
+      liquibase:
+        enabled: true
+        change-log: classpath:/db/changelog/changelog-master.xml
+    server:
+      port: 8081
+    jwt:
+      secret: "WzBZlEhw7iAX8Xe31wU4mzhrLWoSZL92JMWP+0CwLMm0Wtdkcye1zzH9Tp9a+nLwvAfLmZiVwt+k+Y3RObLrAA=="
