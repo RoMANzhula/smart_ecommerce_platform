@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: order-service
+      datasource:
+        url: jdbc:postgresql://order-db:5432/sep_order_db
+        username: postgres
+        password: YOUR_PASSWORD
+      jpa:
+        hibernate:
+          ddl-auto: update
+        show-sql: true
+      kafka:
+        bootstrap-servers: kafka:9092
+        producer:
+          key-serializer: org.apache.kafka.common.serialization.StringSerializer
+          value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    server:
+      port: 8083
+
