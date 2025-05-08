@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-service
+  template:
+    metadata:
+      labels:
+        app: recommendation-service
+    spec:
+      containers:
+        - name: recommendation-service
+          image: romanzhula/recommendation-service:latest
+          ports:
+            - containerPort: 8085
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              subPath: application.yml
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: recommendation-service-config
