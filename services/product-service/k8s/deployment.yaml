@@ -17,8 +17,17 @@ spec:
           image: romanzhula/product-service:latest
           ports:
             - containerPort: 8082
+          env:
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: file:/config/
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config/
+              readOnly: true
           envFrom:
-            - configMapRef:
-                name: product-config
             - secretRef:
                 name: product-db-secret
+      volumes:
+        - name: config-volume
+          configMap:
+            name: product-service-config
