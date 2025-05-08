@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: romanzhula/order-service:latest
+          ports:
+            - containerPort: 8083
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              subPath: application.yml
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: order-service-config
