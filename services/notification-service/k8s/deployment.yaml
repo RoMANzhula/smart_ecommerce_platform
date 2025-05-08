@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: romanzhula/notification-service:latest
+          ports:
+            - containerPort: 8086
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              subPath: application.yml
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: notification-service-config
