@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-cache
+  template:
+    metadata:
+      labels:
+        app: product-cache
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: product-cache-secret
+                  key: redis-password
