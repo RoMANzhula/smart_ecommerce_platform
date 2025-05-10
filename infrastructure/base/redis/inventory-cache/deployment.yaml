@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-cache
+  template:
+    metadata:
+      labels:
+        app: inventory-cache
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-cache-secret
+                  key: redis-password
