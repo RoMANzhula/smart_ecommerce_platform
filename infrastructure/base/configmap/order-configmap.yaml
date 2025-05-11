@@ -8,7 +8,7 @@ data:
       application:
         name: order-service
       datasource:
-        url: jdbc:postgresql://order-db:5432/sep_order_db
+        url: jdbc:postgresql://order-postgres-service:5432/sep_order_db
         username: postgres
         password: YOUR_PASSWORD
       jpa:
