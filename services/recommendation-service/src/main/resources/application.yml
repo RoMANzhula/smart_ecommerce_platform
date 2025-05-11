@@ -3,7 +3,7 @@ spring:
     name: recommendation-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/sep_recommendation_db
+    url: jdbc:postgresql://recommendation-postgres-service:5432/sep_recommendation_db
     username: postgres
     password: YOUR_PASSWORD
     driver-class-name: org.postgresql.Driver
