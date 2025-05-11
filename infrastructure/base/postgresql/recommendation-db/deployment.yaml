@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-postgres
+  template:
+    metadata:
+      labels:
+        app: recommendation-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: recommendation-postgres-secret
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: recommendation-postgres-secret
+                  key: password
+            - name: POSTGRES_DB
+              value: sep_recommendation_db
