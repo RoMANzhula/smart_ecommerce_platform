@@ -27,6 +27,10 @@ kubectl apply -f services/product-service/k8s/
 kubectl apply -f services/recommendation-service/k8s/
 kubectl apply -f services/user-service/k8s/
 
+echo "Deploying Grafana & Prometheus"
+kubectl apply -f infrastructure/monitoring/prometheus/
+kubectl apply -f infrastructure/monitoring/grafana/
+
 echo "Applying Ingress..."
 kubectl apply -f infrastructure/ingress/ingress.yaml
 
