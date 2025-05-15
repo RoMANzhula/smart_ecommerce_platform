@@ -27,5 +27,31 @@ data:
     stripe:
       secret:
         key: sk_test_51N7tu0I3vHGJzoz7...xxxxxxx
+    
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: "*"
+          base-path: /actuator
+      endpoint:
+        health:
+          show-details: always
+          probes:
+            enabled: true
+        prometheus:
+          enabled: true
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+        distribution:
+          percentiles-histogram:
+            http.server.requests: true
+        web:
+          server:
+            auto-time-requests: true
+    
     server:
       port: 8087
+      address: 0.0.0.0
