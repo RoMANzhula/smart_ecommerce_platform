@@ -60,17 +60,6 @@ jobs:
             ["user-service"]=8081
           )
 
-#          for SERVICE in "${!SERVICE_PORTS[@]}"; do
-#            PORT=${SERVICE_PORTS[$SERVICE]}
-#            POD=$(kubectl get pods -l app=$SERVICE -o jsonpath="{.items[0].metadata.name}")
-#
-#            echo "Checking /actuator/health for pod $POD of service $SERVICE on port $PORT..."
-#
-#            kubectl exec "$POD" -- curl -f http://$SERVICE:$PORT/actuator/health || {
-#            echo "Health check failed for $SERVICE";
-#            exit 1;
-#          }
-
           for SERVICE in "${!SERVICE_PORTS[@]}"; do
             PORT=${SERVICE_PORTS[$SERVICE]}
             POD=$(kubectl get pods -l app=$SERVICE -o jsonpath="{.items[0].metadata.name}")
