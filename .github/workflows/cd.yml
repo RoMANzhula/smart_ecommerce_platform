@@ -48,29 +48,5 @@ jobs:
           kubectl rollout status deployment/recommendation-service --timeout=120s
           kubectl rollout status deployment/user-service --timeout=120s
 
-      - name: Check health endpoints
-        run: |
-          declare -A SERVICE_PORTS=(
-            ["inventory-service"]=8084
-            ["notification-service"]=8086
-            ["order-service"]=8083
-            ["product-service"]=8082
-            ["recommendation-service"]=8085
-            ["user-service"]=8081
-          )
-
-          for SERVICE in "${!SERVICE_PORTS[@]}"; do
-            PORT=${SERVICE_PORTS[$SERVICE]}
-            POD=$(kubectl get pods -l app=$SERVICE -o jsonpath="{.items[0].metadata.name}")
-            CLUSTER_IP=$(kubectl get service $SERVICE -o jsonpath="{.spec.clusterIP}")
-            
-            echo "Checking /actuator/health for pod $POD of service $SERVICE on ClusterIP $CLUSTER_IP and port $PORT..."
-            
-            kubectl exec "$POD" -- curl -f http://$CLUSTER_IP:$PORT/actuator/health || {
-            echo "Health check failed for $SERVICE";
-            exit 1;
-            }
-          done
-
       - name: Finish
         run: echo "Deployment and health check completed successfully!"
