@@ -5,14 +5,16 @@ This is a modern e-commerce platform built using a microservices architecture . 
 
 ## Technology Stack
 - Java 21
-- Spring Boot 3.x
+- Spring Boot 3.4.4
 - Kafka for asynchronous event-driven communication
 - Redis for caching
 - PostgreSQL and MongoDB for data storage
 - Docker and Kubernetes for containerization and orchestration
 - Prometheus and Grafana for monitoring
-- Liquibase for database migrations
+- Liquibase and Flyway for relation database migrations
+- Mongock for document database migrations
 - WebClient for external API integration (e.g., Stripe for payments)
+- CI/CD with GitHub Actions
 
 ## Project Structure
 ```plaintext
@@ -26,12 +28,18 @@ smart-ecommerce-platform/
 │   ├── notification-service/
 │   ├── payment-service/
 ├── infrastructure/
-│   ├── kafka/
+│   ├── base/
+│   │   ├── configmap/
+│   │   ├── kafka/
+│   │   ├── mongodb/
+│   │   ├── postgresql/
+│   │   ├── redis/
+│   │   ├── zookeeper/
+│   ├── ingres/
+│   ├── kind/
 │   ├── monitoring/
-│   ├── databases/
-├── ci-cd/
-│   ├── github-actions/
-│   ├── jenkins/
+├── .github/
+│   ├── workflows/
 ├── README.md
 ```
 
