@@ -63,20 +63,24 @@ jobs:
           for SERVICE in "${!SERVICE_PORTS[@]}"; do
             PORT=${SERVICE_PORTS[$SERVICE]}
             POD=$(kubectl get pods -l app=$SERVICE -o jsonpath="{.items[0].metadata.name}")
-            
-            echo "Port-forwarding $SERVICE..."
-            kubectl port-forward "$POD" 9999:$PORT &
+          
+            echo "Port-forwarding $SERVICE on port $PORT..."
+            kubectl port-forward "$POD" 9999:$PORT >pf.log 2>&1 &
             PF_PID=$!
-            sleep 5
-      
+          
+            sleep 30
+          
             echo "Checking /actuator/health for $SERVICE..."
-            curl -f http://localhost:9999/actuator/health || {
+            if curl -f http://localhost:9999/actuator/health; then
+              echo "$SERVICE is healthy."
+            else
               echo "Health check failed for $SERVICE"
               kill $PF_PID
               exit 1
-            }
-      
+            fi
+          
             kill $PF_PID
+            sleep 1
           done
 
       - name: Finish
