@@ -271,3 +271,45 @@
                   - master/or_production/or_other
         )
 
+
+!!!!!!!!!!          COMMON STEPS (LAST VERSION)         !!!!!!!!!!
+		              Working with Kubernetes
+
+0. Full clearing docker system (this command delete all data from Docker, Docker Desktop, cache), input:
+	docker system prune -a --volumes -f
+1. In terminal (WSL) input (here our script for build docker images):
+	cd services
+2. Make our script executable, input:
+	chmod +x build-and-push.sh
+3. Run our script (build images for all our services), input:
+	./build-and-push.sh
+4. Go to package kind, input:
+	cd ../infrastructure/kind
+5. Create cluster in Kind (this command create cluster with default name "kind"), input:
+	kind create cluster --config kind-config.yaml
+        if we need cluster with some name, input:
+	kind create cluster --name my-cluster --config kind-config.yaml
+6. Go to the root of app (romanzhula@DESKTOP-FR1BBMK:/mnt/e/IdeaProjects/smart_ecommerce_platform), input:
+	cd ../..
+7. Make our script executable, input:
+	chmod +x deploy-all.sh
+8. Run our script (script for auto-running in Kuber for all necessarry files):
+	./deploy-all.sh
+
+9.  Common commands:
+	kubectl get pods		- check all pods
+	kubectl get services		- ... services
+                	kubectl get ingress		- ... ingress
+
+	kubectl logs <pod-name>	- show logs about pod
+
+	kubectl port-forward user-service-5f968cc967-xpzfg 8081:8081		- port forwarding for use Postman  GET     http://localhost:8081/api/v1/users/roman
+	kubectl port-forward service/prometheus 9090:9090		- check in browser: http://localhost:9090  - it's Prometheus
+	kubectl port-forward service/grafana 3000:3000			- in browser: http://localhost:3000   - it's Grafana, here login and password - admin
+
+	- "clear" a Kind-cluster without deleting it (input 4 rows):
+		kubectl delete all --all --all-namespaces
+		kubectl delete pvc --all --all-namespaces
+		kubectl delete configmap --all --all-namespaces
+		kubectl delete secret --all --all-namespaces
+
