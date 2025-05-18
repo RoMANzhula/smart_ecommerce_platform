@@ -68,7 +68,6 @@ jobs:
             kubectl port-forward "$POD" 9999:$PORT >pf.log 2>&1 &
             PF_PID=$!
 
-            # Очікування запуску сервісу
             MAX_RETRIES=10
             SUCCESS=false
 
@@ -84,8 +83,9 @@ jobs:
               fi
             done
 
-            # Завершуємо port-forward незалежно від результату
-            kill $PF_PID
+            if kill -0 $PF_PID 2>/dev/null; then
+              kill $PF_PID
+            fi
             sleep 1
 
             if [ "$SUCCESS" = false ]; then
