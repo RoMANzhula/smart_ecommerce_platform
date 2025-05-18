@@ -7,6 +7,7 @@
     - service
     - service-monitor (optional)
     - secret (optional, if we don't use infrastructure)
+
 4. DBs' on services:
             postgres:
                 user-service
@@ -20,10 +21,253 @@
             redis:
                 product-service
                 inventory-service
+
 5. Create script "build-and-push.sh" for automation dockerfiles building:
     - make executor our "build-and-push.sh" file, in the terminal input (cd services):
               chmod +x build-and-push.sh
     - run our "build-and-push.sh" file, in the terminal input (for build our -jar file) (from package services):
               ./build-and-push.sh
 
+
+!!!!!!!!!!              Create infrastructure for Kubernetes            !!!!!!!!!!
+    ├── infrastructure
+    ├── base
+    │   ├── configmap
+    │   ├── kafka
+    │   ├── mongodb
+    │   ├── postgresql
+    │   ├── redis
+    │   └── zookeeper
+    ├── ingress
+    ├── kind
+    └── monitoring
+
+
+!!!!!!!!!!                WORKING WITH Kind                !!!!!!!!!!
+
+1. Install Kind (emulator for Kubernetes):
+       Go to the https://kind.sigs.k8s.io/docs/user/quick-start/
+       and input next commands in Terminal with WSL:
+           [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.26.0/kind-linux-amd64
+           chmod +x ./kind
+           sudo mv ./kind /usr/local/bin/kind
+       and check kind version (we will see like this: kind version 0.26.0):
+           kind --version
+
+2. Create kind-config.yaml file and add settings from https://kind.sigs.k8s.io/docs/user/ingress/
+       We want to run our app with 3 instances and we add 3 workers
+
+3. Run KIND: input command via WSL terminal:
+       kind create cluster --config kind-config.yaml
+           our cluster will have default name - "kind"
+       if we already have cluster:
+           1. input for delete:
+                   kind delete cluster
+              and again input:
+                   kind create cluster --config kind-config.yaml
+           2. create with another name:
+                   kind create cluster --name my-cluster --config kind-config.yaml
+              and input for check running:
+                   kubectl cluster-info --context kind-my-cluster
+
+4. Install Ingress NGINX plugin from https://kind.sigs.k8s.io/docs/user/ingress/ in WSL terminal input command:
+        kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+    next input:
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=90s
+
+5. Create Bash-script for auto-running kubectl -f ... (for all files) named deploy-all.sh in the root of our app
+
+6. Make deploy-all.sh executable, input command from root(:/mnt/e/IdeaProjects/smart_ecommerce_platform):
+                chmod +x deploy-all.sh
+
+7. Run deploy-all.sh, input command from root(:/mnt/e/IdeaProjects/smart_ecommerce_platform):
+                ./deploy-all.sh
+
+8. Check all pods, input:
+                kubectl get pods
+     to monitoring all pods we can input next command
+                kubectl get pods -w     (or: kubectl get pods --watch)
+
+9. If we have errors - look for logs, input:
+        with error status:
+                kubectl logs <pod-name>
+        with not starting status:
+                kubectl describe pod <pod-name>
+        do necessary changes in the file and input (for example: kubectl apply -f infrastructure/base/kafka/deployment.yaml):
+                kubectl apply -f <changed_file.yaml>
+        and again check pods' status:
+                kubectl get pods
+
+10. Check that all resources be work:
+                 kubectl get pods
+                 kubectl get services
+                 kubectl get ingress
+
+11. If we need to delete all pods(k8s) that we need delete employments, input next command:
+        kubectl delete deployments --all
+
+12. If we want to forward port for testing in Postman (for example user-service):
+        kubectl port-forward user-service-5f968cc967-xpzfg 8081:8081
+                now we can check mapping in Postman:
+                    GET     http://localhost:8081/api/v1/users/roman
+
+
+13. Install Ingress Controller (NGINX) for testing in Postman:
+            kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.4/deploy/static/provider/kind/deploy.yaml
+        check to pod start be running:
+            kubectl get pods -n ingress-nginx
+        if we have ingress-nginx-controller-arjh98ewur...  STATUS - pending, input:
+            kubectl label node kind-control-plane ingress-ready=true
+        now we can check mapping in Postman:
+            GET     http://localhost:8081/api/v1/users/roman
+
+14. Build with Maven:
+        cd services -> cd ...-service -> mvn clean package -DskipTests
+
+15. OR WE CAN rebuild all services by script rebuild-and-redeploy.sh:
+     make executable:
+        chmod +x rebuild-and-redeploy.sh
+     run:
+        ./rebuild-and-redeploy.sh
+
+16. If build FAILED:
+    try rebuild service (recommendation-service for example):
+        mvn clean package -DskipTests -f ./services/recommendation-service/pom.xml
+        docker build -t recommendation-service:latest ./services/recommendation-service
+    and load image to kind cluster:
+        kind load docker-image recommendation-service:latest
+    and restart deployment:
+        kubectl rollout restart deployment recommendation-service
+    and check it:
+        kubectl get deployments
+
+17. If we do some changes in the file (for example deployment.yaml for Kafka):
+         cd infrastructure/base/kafka
+         kubectl apply -f deployment.yaml
+    pod should update automatically
+    if we need restart service (for example user-service deployment):
+        kubectl rollout restart deployment user-service
+
+18. If we have error "no main manifest attribute, in /app.jar" -
+        here the solution: https://www.jetbrains.com/help/idea/compiling-applications.html#add_file_to_jar
+
+
+!!!!!!!!!!          Work PROMETHEUS & GRAFANA           !!!!!!!!!!
+
+1. Add dependencies to pom.xml file (spring-boot-starter-actuator and micrometer-registry-prometheus)
+
+2. Add settings to application.yaml
+
+3. Add files:
+    - grafana
+        - grafana-deployment.yaml
+        - grafana-service.yaml
+    - prometheus
+        - prometheus-config.yaml
+        - prometheus-deployment.yaml
+        - prometheus-service.yaml
+
+6. Apply all ne files in kind cluster:
+        kubectl apply -f infrastructure/monitoring/prometheus/prometheus-config.yaml
+        kubectl apply -f infrastructure/monitoring/prometheus/prometheus-deployment.yaml
+        kubectl apply -f infrastructure/monitoring/grafana/grafana-deployment.yaml
+        kubectl apply -f infrastructure/monitoring/grafana/grafana-service.yaml
+        kubectl apply -f infrastructure/monitoring/prometheus/prometheus-service.yaml
+
+5. Rebuild all packages. For example order-service:
+    - build jar-file:
+        ./mvnw clean package -DskipTests
+    - build Docker image:
+        docker build -t romanzhula/order-service:latest .
+    - load image to Kind:
+        kind load docker-image romanzhula/order-service:latest
+    - reload order-service in the kind cluster:
+        kubectl rollout restart deployment order-service
+    - restart deployment Prometheus:
+        kubectl rollout restart deployment prometheus
+
+6. Check new changes:
+        kubectl get pods
+        kubectl get services
+
+7. Forwarding ports for Prometheus and Grafana
+        kubectl port-forward service/prometheus 9090:9090
+    and now check in browser: http://localhost:9090  - it's Prometheus
+        kubectl port-forward service/grafana 3000:3000
+    and now in browser: http://localhost:3000   - it's Grafana, here login and password - admin
+
+8. Add Prometheus to Grafana as a source of metrics:
+        go to http://localhost:3000/connections/datasources
+        click "Add data source"
+        choose "Prometheus"
+        field url input:    http://prometheus:9090
+        and input "Save & test"  -> must be "Successfully queried the Prometheus API."
+
+9. Check services in Prometheus:
+        http://localhost:9090/targets
+
+10. If we have some change in application.yaml files:
+        go to directory:
+            cd services/order-service
+        rebuilding by script:
+            ./mvnw clean package -DskipTests
+            docker build --no-cache -t order-service .
+            kind load docker-image order-service
+            kubectl rollout restart deployment order-service
+
+11. Install Helm:
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+     and check:
+        helm version
+
+12. Install Prometheus Operator (kube-prometheus-stack):
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        kubectl create namespace monitoring
+        helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring
+    this command install Prometheus, Grafana, Alertmanager and will create CRD (ServiceMonitor)
+
+    and chaeck ServiceMonitor:
+
+13. If we want to delete service:
+        kubectl delete pod order-service-584b5c87cc-mjmhn
+     after this command Deployment will create new Pot automatically
+     or we can reload Deployment
+        kubectl rollout restart deployment order-service
+
+14. Full clearing docker system (this command delete all data from Docker, Docker Desktop, cache), input:
+    	docker system prune -a --volumes -f
+
+
+!!!!!!!!!!          CI/CD          !!!!!!!!!!
+
+1. Create package (in the root of app):
+        mkdir -p .github/workflows
+2. Create pipeline files (in the root of app):
+        touch .github/workflows/ci.yml
+        touch .github/workflows/cd.yml
+        touch .github/workflows/cd-prod.yml
+3. Go to https://labs.play-with-k8s.com/     and use instruction in terminal (!!!!!! now it don't work)
+
+4. We use local kind cluster for testing CI/CD
+    - go to our repository at GitHub
+    - go to https://github.com/RoMANzhula/smart_ecommerce_platform/settings/secrets/actions and create secrets
+            DOCKER_USERNAME - input our login of Docker Hub
+            DOCKER_PASSWORD - input our password
+            KUBECONFIG      - for production (paid cluster)
+    - push commit with
+    - open Actions tab and will see our pipelines
+        for production deploy with cd-prod.yml:
+    - go to Actions
+    - choose "CD Production Pipeline"
+    - click "Run workflow" (or we can change settings to run CD Production Pipeline with push in master/main/or other
+        branch in cd-prod.yml add
+            on:
+              push:
+                branches:
+                  - master/or_production/or_other
+        )
 
