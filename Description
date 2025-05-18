@@ -1,0 +1,29 @@
+!!!!!!!!!!              Services            !!!!!!!!!!
+
+1. Create each service using Spring Initializr
+2. Create Dockerfile for each service
+3. Create package k8s (Kubernetes settings):
+    - deployment
+    - service
+    - service-monitor (optional)
+    - secret (optional, if we don't use infrastructure)
+4. DBs' on services:
+            postgres:
+                user-service
+                recommendation-service
+                payment-service
+                order-service
+
+            mongodb:
+                product-service
+
+            redis:
+                product-service
+                inventory-service
+5. Create script "build-and-push.sh" for automation dockerfiles building:
+    - make executor our "build-and-push.sh" file, in the terminal input (cd services):
+              chmod +x build-and-push.sh
+    - run our "build-and-push.sh" file, in the terminal input (for build our -jar file) (from package services):
+              ./build-and-push.sh
+
+
